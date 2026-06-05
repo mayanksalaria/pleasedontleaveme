@@ -1322,8 +1322,8 @@ for(let i=0;i<80;i++){
     </div>
   </div>
 </section>
-  <!-- Hidden YouTube player container -->
-<div id="yt-player" style="position:absolute;width:0;height:0;overflow:hidden;opacity:0;pointer-events:none;"></div>
+  <!-- Hidden YouTube player (1x1 pixel so API works, visually hidden) -->
+<div id="yt-player" style="position:fixed;bottom:0;right:0;width:1px;height:1px;opacity:0;pointer-events:none;z-index:-1;"></div>
 
 <!-- Load the YouTube API -->
 <script src="https://www.youtube.com/iframe_api"></script>
@@ -1332,14 +1332,14 @@ for(let i=0;i<80;i++){
 <!-- ═══ SCRIPTS ═══ -->
 <script>
 // ── AUDIO ──
-let player, musicPlaying = false;
+// ── AUDIO (YouTube hidden player) ──
+let player, musicPlaying = false, playerReady = false;
 
-// Called automatically by the YouTube API when ready
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('yt-player', {
-    height: '0',
-    width: '0',
-    videoId: 'Qw3vpkBKmoE',        // Your video
+    height: '1',
+    width: '1',
+    videoId: '4ObrTwf7Fp4',
     playerVars: {
       autoplay: 0,
       controls: 0,
@@ -1349,17 +1349,29 @@ function onYouTubeIframeAPIReady() {
       rel: 0,
       showinfo: 0,
       iv_load_policy: 3,
-      start: 0
+      playsinline: 1  // Required for mobile
     },
     events: {
       onReady: (event) => {
+        playerReady = true;
         event.target.setVolume(70);
+        console.log('YouTube player ready');
       },
       onStateChange: (event) => {
-        // Optional: auto-replay when video ends
+        // Loop when video ends
         if (event.data === YT.PlayerState.ENDED && musicPlaying) {
+          event.target.seekTo(0);
           event.target.playVideo();
         }
+        // Update button if user pauses externally
+        if (event.data === YT.PlayerState.PAUSED && musicPlaying) {
+          musicPlaying = false;
+          document.getElementById('musicBtn').textContent = '🎵';
+          document.getElementById('musicBtn').style.background = 'var(--purple)';
+        }
+      },
+      onError: (event) => {
+        console.error('YouTube player error:', event.data);
       }
     }
   });
@@ -1367,9 +1379,14 @@ function onYouTubeIframeAPIReady() {
 
 function toggleMusic() {
   const btn = document.getElementById('musicBtn');
-  
-  if (!player || !player.playVideo) {
-    console.log('Player not ready yet');
+
+  if (!playerReady || !player || typeof player.playVideo !== 'function') {
+    console.log('Player not ready yet, retrying...');
+    btn.textContent = '⏳';
+    // Try again in 1 second
+    setTimeout(() => {
+      if (playerReady) toggleMusic();
+    }, 1000);
     return;
   }
 
