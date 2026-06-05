@@ -1087,6 +1087,7 @@ for(let i=0;i<80;i++){
     <div style="margin-top:22px;font-size:40px;animation:heartbeat 2s ease infinite">🌸</div>
   </div>
 </section>
+  
 
 <!-- ═══════════════════════════════
      SCENE 8 — DIPLOMA
@@ -1321,237 +1322,67 @@ for(let i=0;i<80;i++){
     </div>
   </div>
 </section>
+  <!-- Hidden YouTube player container -->
+<div id="yt-player" style="position:absolute;width:0;height:0;overflow:hidden;opacity:0;pointer-events:none;"></div>
+
+<!-- Load the YouTube API -->
+<script src="https://www.youtube.com/iframe_api"></script>
+  
 
 <!-- ═══ SCRIPTS ═══ -->
 <script>
 // ── AUDIO ──
-let audioCtx, musicPlaying = false;
-let masterGain, reverbNode, compressor;
+let player, musicPlaying = false;
 
-// ─── Song Constants ────────────────────────────────────────────
-// Die For You – The Weeknd | Key: C# minor | BPM: 134
-const BPM      = 134;
-const BEAT     = 60 / BPM;          // ~0.4478s
-const BAR      = BEAT * 4;          // ~1.7910s
-const LOOP_DUR = BAR * 4;           // ~7.1642s full progression
-
-// ─── All note frequencies used ─────────────────────────────────
-const N = {
-  Fs2:92.50,  A2:110.00, Gs2:103.83, Cs3:138.59,
-  B2:123.47,  Ds3:155.56, E3:164.81,  Fs3:184.99,
-  Gs3:207.65, A3:220.00,  B3:246.94,  Cs4:277.18,
-  Ds4:311.13, E4:329.63,  Fs4:369.99, Gs4:415.30,
-  A4:440.00,  B4:493.88,  Cs5:554.37, Ds5:622.25,
-  E5:659.26,  Fs5:739.99, Gs5:830.61, A5:880.00,
-};
-
-// ─── Chord voicings ─────────────────────────────────────────────
-// Amaj7 | G#m7 | C#m7 | F#m9
-const CHORDS = {
-  Amaj7: [N.A2,  N.E3,  N.A3,  N.Cs4, N.E4,  N.Gs4],
-  Gsm7:  [N.Gs2, N.Ds3, N.Gs3, N.B3,  N.Ds4, N.Fs4],
-  Csm7:  [N.Cs3, N.Gs3, N.Cs4, N.E4,  N.Gs4, N.B4 ],
-  Fsm9:  [N.Fs2, N.Cs3, N.Fs3, N.A3,  N.Cs4, N.E4 ],
-};
-const PROGRESSION = ['Amaj7','Gsm7','Csm7','Fsm9'];
-
-// ─── Piano synthesis ────────────────────────────────────────────
-// Real piano timbre = stacked harmonic oscillators + sharp attack + long exponential decay
-function piano(freq, startTime, duration, velocity = 0.18) {
-  if (!audioCtx || !masterGain) return;
-
-  // Harmonic series that makes it sound like a piano string
-  const harmonics = [
-    { ratio: 1,    amp: 1.00 },
-    { ratio: 2,    amp: 0.60 },
-    { ratio: 3,    amp: 0.25 },
-    { ratio: 4,    amp: 0.14 },
-    { ratio: 5,    amp: 0.07 },
-    { ratio: 6,    amp: 0.04 },
-    { ratio: 7,    amp: 0.02 },
-  ];
-
-  const noteGain = audioCtx.createGain();
-  const filter   = audioCtx.createBiquadFilter();
-  filter.type            = 'lowpass';
-  filter.frequency.value = Math.min(freq * 12, 6000); // brightness
-  filter.Q.value         = 0.5;
-
-  noteGain.connect(filter);
-  filter.connect(masterGain);
-
-  // Piano envelope: near-instant attack → long exponential decay → hold → release
-  const attackTime = 0.004;
-  const decayTime  = Math.min(duration * 0.6, 2.4);
-  noteGain.gain.setValueAtTime(0, startTime);
-  noteGain.gain.linearRampToValueAtTime(velocity, startTime + attackTime);
-  noteGain.gain.exponentialRampToValueAtTime(velocity * 0.28, startTime + decayTime);
-  noteGain.gain.exponentialRampToValueAtTime(0.0001,          startTime + duration);
-
-  harmonics.forEach(h => {
-    const osc     = audioCtx.createOscillator();
-    const oscGain = audioCtx.createGain();
-    osc.type            = 'sine';
-    osc.frequency.value = freq * h.ratio;
-    // Higher harmonics decay faster (just like real piano strings)
-    oscGain.gain.setValueAtTime(h.amp, startTime);
-    oscGain.gain.exponentialRampToValueAtTime(h.amp * 0.01, startTime + duration * (1 / h.ratio));
-    osc.connect(oscGain);
-    oscGain.connect(noteGain);
-    osc.start(startTime);
-    osc.stop(startTime + duration + 0.1);
-  });
-}
-
-// ─── Left hand: bass note + broken arpeggio ─────────────────────
-function playArpeggio(chordName, startTime) {
-  const tones = CHORDS[chordName];
-
-  // Bass root hit on beat 1
-  piano(tones[0], startTime, BAR * 0.9, 0.20);
-
-  // Broken arpeggio across the bar (beats 1.5 → 4)
-  // Pattern: root – 3rd – 5th – 7th – 5th – 3rd  (6 notes over 4 beats)
-  const arpOffsets = [BEAT*0.5, BEAT*1.0, BEAT*1.5, BEAT*2.0, BEAT*2.5, BEAT*3.0];
-  const arpNotes   = [1, 2, 3, 4, 3, 2]; // indices into tones[]
-  arpOffsets.forEach((off, i) => {
-    const idx = arpNotes[i];
-    if (tones[idx]) {
-      piano(tones[idx], startTime + off, BEAT * 1.1, 0.10);
+// Called automatically by the YouTube API when ready
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('yt-player', {
+    height: '0',
+    width: '0',
+    videoId: 'Qw3vpkBKmoE',        // Your video
+    playerVars: {
+      autoplay: 0,
+      controls: 0,
+      disablekb: 1,
+      fs: 0,
+      modestbranding: 1,
+      rel: 0,
+      showinfo: 0,
+      iv_load_policy: 3,
+      start: 0
+    },
+    events: {
+      onReady: (event) => {
+        event.target.setVolume(70);
+      },
+      onStateChange: (event) => {
+        // Optional: auto-replay when video ends
+        if (event.data === YT.PlayerState.ENDED && musicPlaying) {
+          event.target.playVideo();
+        }
+      }
     }
   });
 }
 
-// ─── Right hand melody ──────────────────────────────────────────
-// Closely follows the "Die For You" vocal hook / main synth melody
-// Pattern covers all 4 bars (~7.16 s)
-function playMelody(startTime) {
-  // t = offset in seconds from startTime
-  // Each entry: [freq, t_offset, duration, velocity]
-  const mel = [
-    // ── Bar 1 (Amaj7) ─ ascending phrase ──
-    [N.E4,  0.00,        BEAT*0.9,  0.13],
-    [N.Gs4, BEAT*1.0,    BEAT*0.9,  0.14],
-    [N.A4,  BEAT*2.0,    BEAT*1.5,  0.16],
-    [N.Gs4, BEAT*3.0,    BEAT*0.9,  0.13],
-
-    // ── Bar 2 (G#m7) ─ descending resolve ──
-    [N.Fs4, BAR+BEAT*0,  BEAT*0.9,  0.14],
-    [N.E4,  BAR+BEAT*1,  BEAT*0.9,  0.13],
-    [N.Ds4, BAR+BEAT*2,  BEAT*1.2,  0.14],
-    [N.Cs4, BAR+BEAT*3,  BEAT*0.8,  0.12],
-
-    // ── Bar 3 (C#m7) ─ hook / climax ──
-    [N.Cs5, BAR*2+BEAT*0, BEAT*0.75, 0.18],
-    [N.B4,  BAR*2+BEAT*0.75, BEAT*0.75, 0.16],
-    [N.Gs4, BAR*2+BEAT*1.5,  BEAT*0.75, 0.15],
-    [N.A4,  BAR*2+BEAT*2.25, BEAT*0.75, 0.16],
-    [N.B4,  BAR*2+BEAT*3,    BEAT*1.0,  0.15],
-
-    // ── Bar 4 (F#m9) ─ long resolution, leads into loop ──
-    [N.A4,  BAR*3+BEAT*0,  BEAT*1.0,  0.15],
-    [N.Gs4, BAR*3+BEAT*1,  BEAT*0.9,  0.13],
-    [N.Fs4, BAR*3+BEAT*2,  BEAT*0.9,  0.13],
-    [N.E4,  BAR*3+BEAT*3,  BEAT*1.2,  0.13],
-  ];
-
-  mel.forEach(([freq, off, dur, vel]) => {
-    piano(freq, startTime + off, dur, vel);
-  });
-}
-
-// ─── Reverb (convolution with exponential decay impulse) ─────────
-function createReverb() {
-  const rate    = audioCtx.sampleRate;
-  const length  = rate * 3.0;
-  const impulse = audioCtx.createBuffer(2, length, rate);
-  for (let c = 0; c < 2; c++) {
-    const ch = impulse.getChannelData(c);
-    for (let i = 0; i < length; i++) {
-      // Exponential decay noise – gives that lush room
-      ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 2.5);
-    }
-  }
-  const conv = audioCtx.createConvolver();
-  conv.buffer = impulse;
-  return conv;
-}
-
-// ─── Boot audio graph ────────────────────────────────────────────
-function createAmbientMusic() {
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-  // Master gain
-  masterGain            = audioCtx.createGain();
-  masterGain.gain.value = 0.75;
-
-  // Compressor – glues everything together, makes it punchier
-  compressor                     = audioCtx.createDynamicsCompressor();
-  compressor.threshold.value     = -18;
-  compressor.knee.value          = 10;
-  compressor.ratio.value         = 4;
-  compressor.attack.value        = 0.003;
-  compressor.release.value       = 0.25;
-
-  // Reverb wet path
-  reverbNode              = createReverb();
-  const reverbGain        = audioCtx.createGain();
-  reverbGain.gain.value   = 0.30;   // 30 % wet – don't drown the piano
-
-  // Dry path (no reverb)
-  masterGain.connect(compressor);
-  compressor.connect(audioCtx.destination);
-
-  // Wet path
-  masterGain.connect(reverbGain);
-  reverbGain.connect(reverbNode);
-  reverbNode.connect(audioCtx.destination);
-
-  // ── Main loop ──
-  let scheduledUntil = audioCtx.currentTime;
-
-  function loop() {
-    if (!musicPlaying) return;
-
-    // Schedule 2 loops ahead so there are no gaps
-    while (scheduledUntil < audioCtx.currentTime + LOOP_DUR * 2) {
-      const t = scheduledUntil;
-
-      // Left hand: arpeggiated chords
-      PROGRESSION.forEach((chord, i) => {
-        playArpeggio(chord, t + i * BAR);
-      });
-
-      // Right hand: melody
-      playMelody(t);
-
-      scheduledUntil += LOOP_DUR;
-    }
-
-    // Check again in half a loop
-    setTimeout(loop, LOOP_DUR * 0.5 * 1000);
-  }
-
-  loop();
-}
-
-// ─── Toggle button ───────────────────────────────────────────────
 function toggleMusic() {
   const btn = document.getElementById('musicBtn');
+  
+  if (!player || !player.playVideo) {
+    console.log('Player not ready yet');
+    return;
+  }
+
   if (!musicPlaying) {
     musicPlaying = true;
     btn.textContent = '🎶';
     btn.style.background = 'var(--pink)';
-    if (!audioCtx) {
-      createAmbientMusic();
-    } else if (audioCtx.state === 'suspended') {
-      audioCtx.resume();
-    }
+    player.playVideo();
   } else {
     musicPlaying = false;
     btn.textContent = '🎵';
     btn.style.background = 'var(--purple)';
-    if (audioCtx) audioCtx.suspend();
+    player.pauseVideo();
   }
 }
 // ── PARTICLE CANVAS ──
