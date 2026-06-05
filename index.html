@@ -1325,44 +1325,220 @@ for(let i=0;i<80;i++){
 <!-- ═══ SCRIPTS ═══ -->
 <script>
 // ── AUDIO ──
-let audioCtx, musicPlaying=false;
-function createAmbientMusic(){
-  audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-  const notes=[261.63,293.66,329.63,349.23,392,440,493.88];
-  function playNote(freq,time,dur){
-    const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
-    osc.connect(gain); gain.connect(audioCtx.destination);
-    osc.frequency.value=freq; osc.type='sine';
-    gain.gain.setValueAtTime(0,time);
-    gain.gain.linearRampToValueAtTime(0.06,time+0.1);
-    gain.gain.linearRampToValueAtTime(0,time+dur);
-    osc.start(time); osc.stop(time+dur+0.1);
-  }
-  let t=audioCtx.currentTime;
-  const melody=[0,2,4,5,4,2,0,2,4,7,6,4,2,4,5,4];
-  function loop(){
-    if(!musicPlaying)return;
-    t=audioCtx.currentTime;
-    melody.forEach((n,i)=>{
-      playNote(notes[n]*0.5,t+i*0.6,0.5);
-      if(i%3===0) playNote(notes[n%notes.length]*0.25,t+i*0.6+0.1,1);
-    });
-    setTimeout(loop,melody.length*600);
-  }
-  loop();
+let audioCtx, musicPlaying = false;
+let masterGain, reverbNode;
+
+// Die For You - The Weeknd
+// Key: C# minor | BPM: 134 | Chords: Amaj7 -> G#m7 -> C#m7 -> F#m9
+
+const CHORD_TONES = {
+    Amaj7:  [110.00, 138.59, 164.81, 207.65],  // A2, C#3, E3, G#3
+    Gsm7:   [103.83, 123.47, 155.56, 185.00],  // G#2, B2, D#3, F#3
+    Csm7:   [138.59, 164.81, 207.65, 246.94],  // C#3, E3, G#3, B3
+    Fsm9:   [92.50,  110.00, 138.59, 164.81, 207.65],  // F#2, A2, C#3, E3, G#3
+};
+
+const PROGRESSION = ['Amaj7', 'Gsm7', 'Csm7', 'Fsm9'];
+const BPM = 134;
+const BAR_DUR = 4 * 60 / BPM; // ~1.791s per bar
+const LOOP_DUR = BAR_DUR * 4; // ~7.164s full progression
+
+// Melody notes from the vocal line (C# minor scale)
+const MELODY = {
+    E4: 329.63, F4: 349.23, Fs4: 369.99, Gs4: 415.30,
+    A4: 440.00, B4: 493.88, Cs5: 554.37, Ds4: 311.13,
+    Cs4: 277.18, B3: 246.94, Gs3: 207.65
+};
+
+// Create a simple reverb impulse
+function createReverb() {
+    const rate = audioCtx.sampleRate;
+    const length = rate * 2.5; // 2.5 second reverb
+    const impulse = audioCtx.createBuffer(2, length, rate);
+    for (let c = 0; c < 2; c++) {
+        const ch = impulse.getChannelData(c);
+        for (let i = 0; i < length; i++) {
+            ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 3);
+        }
+    }
+    const convolver = audioCtx.createConvolver();
+    convolver.buffer = impulse;
+    return convolver;
 }
-function toggleMusic(){
-  const btn=document.getElementById('musicBtn');
-  if(!musicPlaying){
-    musicPlaying=true; btn.textContent='🎶';
-    btn.style.background='var(--pink)';
-    if(!audioCtx) createAmbientMusic();
-    else if(audioCtx.state==='suspended') audioCtx.resume();
-  } else {
-    musicPlaying=false; btn.textContent='🎵';
-    btn.style.background='var(--purple)';
-    if(audioCtx) audioCtx.suspend();
-  }
+
+function createPad(freq, time, duration, detune = 0) {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    const filter = audioCtx.createBiquadFilter();
+    
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    osc.detune.value = detune;
+    
+    filter.type = 'lowpass';
+    filter.frequency.value = 800;
+    filter.Q.value = 1;
+    
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(masterGain);
+    
+    // Slow attack, long sustain, gentle release
+    gain.gain.setValueAtTime(0, time);
+    gain.gain.linearRampToValueAtTime(0.04, time + 1.2);
+    gain.gain.linearRampToValueAtTime(0.025, time + duration - 0.5);
+    gain.gain.linearRampToValueAtTime(0, time + duration);
+    
+    osc.start(time);
+    osc.stop(time + duration);
+}
+
+function createBass(freq, time, duration) {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    const filter = audioCtx.createBiquadFilter();
+    
+    osc.type = 'triangle';
+    osc.frequency.value = freq * 0.5; // One octave down
+    
+    filter.type = 'lowpass';
+    filter.frequency.value = 200;
+    
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(masterGain);
+    
+    gain.gain.setValueAtTime(0, time);
+    gain.gain.linearRampToValueAtTime(0.08, time + 0.05);
+    gain.gain.setValueAtTime(0.08, time + duration - 0.1);
+    gain.gain.linearRampToValueAtTime(0, time + duration);
+    
+    osc.start(time);
+    osc.stop(time + duration);
+}
+
+function createMelodyNote(freq, time, duration, velocity = 0.06) {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    const filter = audioCtx.createBiquadFilter();
+    
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    
+    filter.type = 'lowpass';
+    filter.frequency.value = 2500;
+    filter.Q.value = 2;
+    
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(masterGain);
+    
+    gain.gain.setValueAtTime(0, time);
+    gain.gain.linearRampToValueAtTime(velocity, time + 0.08);
+    gain.gain.exponentialRampToValueAtTime(velocity * 0.3, time + duration * 0.7);
+    gain.gain.linearRampToValueAtTime(0, time + duration);
+    
+    osc.start(time);
+    osc.stop(time + duration);
+}
+
+function playChord(chordName, time, duration) {
+    const tones = CHORD_TONES[chordName];
+    // Root note bass
+    createBass(tones[0], time, duration);
+    // Chord tones with slight detuning for warmth
+    tones.forEach((freq, i) => {
+        createPad(freq, time, duration, (i % 2 === 0 ? 3 : -3));
+        // Add higher octave for shimmer
+        if (i < 3) {
+            createPad(freq * 2, time, duration, (i % 2 === 0 ? -2 : 2));
+        }
+    });
+}
+
+function playMelodyPattern(t) {
+    // "Die For You" vocal melody feel
+    // Even though we're going through it...
+    const pattern = [
+        { n: 'E4',  d: 0.45, v: 0.05 },
+        { n: 'Fs4', d: 0.45, v: 0.05 },
+        { n: 'Gs4', d: 0.50, v: 0.06 },
+        { n: 'Fs4', d: 0.45, v: 0.05 },
+        { n: 'E4',  d: 0.45, v: 0.05 },
+        { n: 'Ds4', d: 0.45, v: 0.04 },
+        { n: 'Cs4', d: 0.60, v: 0.05 },
+        { n: 'B3',  d: 0.50, v: 0.04 },
+        { n: 'Gs3', d: 0.60, v: 0.04 },
+        { n: 'Cs4', d: 0.50, v: 0.05 },
+        { n: 'Ds4', d: 0.45, v: 0.05 },
+        { n: 'E4',  d: 0.80, v: 0.06 },
+    ];
+    
+    let offset = 0;
+    pattern.forEach(note => {
+        createMelodyNote(MELODY[note.n], t + offset, note.d, note.v);
+        offset += note.d + 0.05;
+    });
+}
+
+function createAmbientMusic() {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = 0.7;
+    
+    // Add reverb
+    reverbNode = createReverb();
+    const reverbGain = audioCtx.createGain();
+    reverbGain.gain.value = 0.35;
+    
+    masterGain.connect(reverbGain);
+    reverbGain.connect(reverbNode);
+    reverbNode.connect(audioCtx.destination);
+    masterGain.connect(audioCtx.destination);
+    
+    let t = audioCtx.currentTime;
+    
+    function loop() {
+        if (!musicPlaying) return;
+        
+        t = audioCtx.currentTime;
+        
+        // Play chord progression
+        PROGRESSION.forEach((chord, i) => {
+            playChord(chord, t + i * BAR_DUR, BAR_DUR + 0.5);
+        });
+        
+        // Play melody over the progression
+        playMelodyPattern(t);
+        // Second melody phrase
+        setTimeout(() => {
+            if (musicPlaying) playMelodyPattern(t + LOOP_DUR * 0.5);
+        }, LOOP_DUR * 0.5 * 1000);
+        
+        setTimeout(loop, LOOP_DUR * 1000);
+    }
+    
+    loop();
+}
+
+function toggleMusic() {
+    const btn = document.getElementById('musicBtn');
+    if (!musicPlaying) {
+        musicPlaying = true;
+        btn.textContent = '🎶';
+        btn.style.background = 'var(--pink)';
+        if (!audioCtx) {
+            createAmbientMusic();
+        } else if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+    } else {
+        musicPlaying = false;
+        btn.textContent = '🎵';
+        btn.style.background = 'var(--purple)';
+        if (audioCtx) audioCtx.suspend();
+    }
 }
 
 // ── PARTICLE CANVAS ──
