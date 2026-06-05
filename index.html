@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Official Apology For Vania 🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Nunito:wght@300;400;600;700;800;900&family=Dancing+Script:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sky: #87CEEB;
+  --pink: #FFB6C1;
+  --purple: #B19CD9;
+  --orange: #FFB347;
+  --deep-purple: #6A4C93;
+  --soft-green: #90EE90;
+  --rose-red: #FF6B6B;
+  --gold: #FFD700;
+  --cream: #FFF8F0;
+  --dark: #1a0a2e;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--dark);
+  overflow-x: hidden;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ctext y='28' font-size='28'%3E🌸%3C/text%3E%3C/svg%3E") 16 16, auto;
+}
+
+/* PARTICLE CANVAS */
+#particleCanvas {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
+}
+
+/* PROGRESS BAR */
+#progressBar {
+  position: fixed; top: 0; left: 0;
+  height: 4px; width: 0%;
+  background: linear-gradient(90deg, var(--pink), var(--purple), var(--orange));
+  z-index: 9999;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 10px var(--pink);
+}
+
+/* MUSIC TOGGLE */
+#musicBtn {
+  position: fixed; bottom: 24px; right: 24px;
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--purple), var(--pink));
+  border: 2px solid rgba(255,255,255,0.3);
+  color: white; font-size: 22px;
+  cursor: pointer; z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 20px rgba(177,156,217,0.5);
+  transition: transform 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+#musicBtn:hover { transform: scale(1.15) rotate(10deg); }
+
+/* SCENE NAV DOTS */
+#navDots {
+  position: fixed; right: 16px; top: 50%;
+  transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 10px;
+  z-index: 9998;
+}
+.navDot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255,255,255,0.5);
+}
+.navDot.active {
+  background: var(--pink);
+  box-shadow: 0 0 8px var(--pink);
+  transform: scale(1.4);
+}
+
+/* SECTIONS */
+.scene {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  overflow: hidden;
+}
+
+/* GLASSMORPHISM CARD */
+.glass {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 24px;
+  padding: 40px 32px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+}
+
+/* FLOATING ANIMATION */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-14px) rotate(2deg); }
+  66% { transform: translateY(-7px) rotate(-1deg); }
+}
+@keyframes floatX {
+  0% { transform: translateX(-120vw) translateY(0) rotate(0deg); }
+  50% { transform: translateX(0vw) translateY(-20px) rotate(10deg); }
+  100% { transform: translateX(120vw) translateY(0) rotate(0deg); }
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.85; }
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-60px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+@keyframes bloom {
+  0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+  60% { transform: scale(1.2) rotate(5deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+@keyframes duckSwim {
+  0% { transform: translateX(-10px) rotate(-2deg); }
+  50% { transform: translateX(10px) rotate(2deg); }
+  100% { transform: translateX(-10px) rotate(-2deg); }
+}
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.15); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.1); }
+  70% { transform: scale(1); }
+}
+@keyframes raindrop {
+  0% { transform: translateY(-100vh); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translateY(110vh); opacity: 0; }
+}
+@keyframes dance {
+  0%, 100% { transform: rotate(-10deg) translateY(0); }
+  25% { transform: rotate(10deg) translateY(-10px); }
+  50% { transform: rotate(-5deg) translateY(0); }
+  75% { transform: rotate(8deg) translateY(-8px); }
+}
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 10px var(--pink), 0 0 20px var(--purple); }
+  50% { box-shadow: 0 0 20px var(--pink), 0 0 40px var(--purple), 0 0 60px var(--orange); }
+}
+
+/* ===================== SCENE 1 - INTRO ===================== */
+#scene1 {
+  background: linear-gradient(160deg, #1a0a2e 0%, #2d1b4e 30%, #4a2060 55%, #FF8C42 85%, #FFB347 100%);
+}
+#scene1::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 60%, rgba(255,179,71,0.3) 0%, transparent 70%);
+}
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 6vw, 4.5rem);
+  font-weight: 900;
+  text-align: center;
+  color: white;
+  line-height: 1.2;
+  text-shadow: 0 0 30px rgba(255,182,193,0.8);
+  animation: fadeInUp 1s ease forwards;
+}
+
+.hero-subtitle {
+  font-family: 'Dancing Script', cursive;
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  color: var(--pink);
+  text-align: center;
+  margin-top: 12px;
+  animation: fadeInUp 1.2s ease forwards;
+}
+
+.certificate {
+  max-width: 600px; width: 100%;
+  margin-top: 32px;
+  padding: 32px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(177,156,217,0.1));
+  border: 3px solid var(--gold);
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
+  text-align: center;
+  position: relative;
+  animation: fadeInUp 1.5s ease forwards, glow 3s ease infinite;
+}
+.certificate::before, .certificate::after {
+  content: '🌸';
+  position: absolute;
+  font-size: 32px;
+  animation: wiggle 2s ease infinite;
+}
+.certificate::before { top: 16px; left: 16px; }
+.certificate::after { top: 16px; right: 16px; }
+
+.cert-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1rem, 3vw, 1.6rem);
+  color: var(--gold);
+  font-style: italic;
+  letter-spacing: 2px;
+}
+.cert-name {
+  font-family: 'Dancing Script', cursive;
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  color: white;
+  margin: 12px 0;
+  text-shadow: 0 0 20px var(--pink);
+}
+.cert-desc {
+  color: rgba(255,255,255,0.8);
+  font-size: 1rem;
+  margin: 8px 0;
+}
+.cert-grade {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--orange), var(--rose-red));
+  color: white;
+  padding: 8px 24px;
+  border-radius: 30px;
+  font-weight: 800;
+  font-size: 1.1rem;
+  margin: 12px;
+  animation: heartbeat 2s ease infinite;
+}
+.stamp {
+  position: absolute;
+  bottom: -20px; right: 30px;
+  background: var(--rose-red);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 900;
+  font-size: 0.85rem;
+  letter-spacing: 3px;
+  transform: rotate(-12deg);
+  border: 3px solid rgba(255,255,255,0.4);
+}
+
+/* ===================== SCENE 2 - INVESTIGATION ===================== */
+#scene2 {
+  background: linear-gradient(135deg, #0a0a2e 0%, #1a1040 40%, #2a0a4e 70%, #4a1a60 100%);
+}
+.board {
+  max-width: 700px; width: 100%;
+  background: rgba(139,90,43,0.2);
+  border: 2px solid rgba(255,179,71,0.3);
+  border-radius: 16px;
+  padding: 24px;
+  position: relative;
+}
+.string {
+  position: absolute;
+  border-top: 2px solid rgba(255,100,100,0.7);
+  transform-origin: left center;
+}
+.pin {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  position: absolute;
+  top: -7px; left: -7px;
+}
+.evidence-card {
+  display: inline-block;
+  background: rgba(255,248,240,0.95);
+  color: #333;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transform: rotate(var(--rot, -2deg));
+  box-shadow: 3px 3px 10px rgba(0,0,0,0.3);
+  position: relative;
+}
+.evidence-card::before {
+  content: '📌';
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  font-size: 18px;
+}
+
+/* ===================== SCENE 3 - SLAP ===================== */
+#scene3 {
+  background: linear-gradient(135deg, #2d1b4e, #4a2060, #6a3070, #FFB347);
+}
+.boyfriend-avatar {
+  font-size: 120px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  display: inline-block;
+  animation: float 3s ease infinite;
+  filter: drop-shadow(0 0 20px rgba(255,182,193,0.5));
+}
+.damage-bar {
+  width: 300px;
+  height: 24px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 12px;
+  border: 2px solid rgba(255,255,255,0.2);
+  overflow: hidden;
+  margin: 16px auto;
+}
+.damage-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--soft-green), var(--orange), var(--rose-red));
+  border-radius: 12px;
+  transition: width 0.3s ease;
+  width: 0%;
+}
+.slap-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  margin: 8px;
+  transition: all 0.2s ease;
+  font-family: 'Nunito', sans-serif;
+}
+.slap-btn:hover { transform: scale(1.1); }
+.slap-btn:active { transform: scale(0.95); }
+.slap-btn.slap { background: linear-gradient(135deg, var(--pink), var(--rose-red)); color: white; }
+.slap-btn.bonk { background: linear-gradient(135deg, var(--orange), #ff8c00); color: white; }
+.slap-btn.bite { background: linear-gradient(135deg, var(--purple), var(--deep-purple)); color: white; }
+.slap-btn.annoy { background: linear-gradient(135deg, var(--sky), #4fc3f7); color: #1a0a2e; }
+
+.reaction-text {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.8rem;
+  color: var(--pink);
+  text-align: center;
+  min-height: 50px;
+  animation: fadeInUp 0.3s ease;
+}
+
+/* ===================== SCENE 4 - TIMELINE ===================== */
+#scene4 {
+  background: linear-gradient(160deg, #1a0a2e, #3d1a6e, #FF8C42, #FFB347);
+}
+.timeline {
+  max-width: 600px; width: 100%;
+  position: relative;
+}
+.timeline::before {
+  content: '';
+  position: absolute; left: 50%; top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, var(--pink), var(--purple), var(--orange));
+  transform: translateX(-50%);
+}
+.timeline-item {
+  width: 45%;
+  padding: 16px 20px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  position: relative;
+  animation: fadeInUp 0.6s ease forwards;
+  opacity: 0;
+}
+.timeline-item:nth-child(odd) {
+  margin-left: 0;
+  margin-right: auto;
+  background: rgba(255,182,193,0.15);
+  border: 1px solid rgba(255,182,193,0.3);
+}
+.timeline-item:nth-child(even) {
+  margin-left: auto;
+  margin-right: 0;
+  background: rgba(177,156,217,0.15);
+  border: 1px solid rgba(177,156,217,0.3);
+}
+.timeline-item::after {
+  content: attr(data-icon);
+  position: absolute;
+  top: 50%;
+  font-size: 24px;
+  transform: translateY(-50%);
+}
+.timeline-item:nth-child(odd)::after { right: -46px; }
+.timeline-item:nth-child(even)::after { left: -46px; }
+.timeline-item h4 { color: var(--gold); font-weight: 800; margin-bottom: 4px; }
+.timeline-item p { color: rgba(255,255,255,0.8); font-size: 0.9rem; }
+
+/* ===================== SCENE 5 - BTS COURT ===================== */
+#scene5 {
+  background: linear-gradient(135deg, #1a0040, #2d0060, #4a0080, #6a00a0);
+}
+.court-header {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-weight: 900;
+  color: var(--purple);
+  text-align: center;
+  text-shadow: 0 0 30px rgba(177,156,217,0.8);
+}
+.charge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: rgba(177,156,217,0.1);
+  border-left: 4px solid var(--purple);
+  border-radius: 0 12px 12px 0;
+  margin: 8px 0;
+  color: white;
+}
+.verdict-box {
+  background: linear-gradient(135deg, rgba(177,156,217,0.2), rgba(106,0,160,0.2));
+  border: 2px solid var(--purple);
+  border-radius: 20px;
+  padding: 32px;
+  text-align: center;
+  margin-top: 24px;
+}
+.verdict-text {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  color: var(--rose-red);
+  font-weight: 900;
+  animation: pulse 2s ease infinite;
+}
+.sentence-item {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.4rem;
+  color: white;
+  margin: 8px 0;
+}
+
+/* ===================== SCENE 6 - EIFFEL TOWER ===================== */
+#scene6 {
+  background: linear-gradient(160deg, #0a0a1e, #1a1040, #2a1060, #4a2080, #ff6b35, #FFB347);
+}
+.eiffel {
+  font-size: 120px;
+  text-align: center;
+  filter: drop-shadow(0 0 30px rgba(255,179,71,0.6));
+  animation: float 4s ease infinite;
+}
+.emotional-text {
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  color: rgba(255,255,255,0.9);
+  line-height: 2;
+  text-align: center;
+  max-width: 600px;
+  font-style: italic;
+}
+.highlight-line {
+  color: var(--pink);
+  font-weight: 600;
+  font-size: 1.15em;
+}
+
+/* ===================== SCENE 7 - TRUTH ===================== */
+#scene7 {
+  background: linear-gradient(135deg, #050510, #0a0a20, #150a30, #200a40);
+}
+.truth-text {
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  color: rgba(255,255,255,0.85);
+  line-height: 2.2;
+  text-align: center;
+  max-width: 600px;
+}
+.maybe-line {
+  color: rgba(255,182,193,0.9);
+  display: block;
+  margin: 6px 0;
+  font-style: italic;
+  animation: fadeInUp 0.5s ease forwards;
+  opacity: 0;
+}
+.storm-text {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  color: var(--sky);
+  text-align: center;
+  margin-top: 24px;
+  font-style: italic;
+}
+
+/* ===================== SCENE 8 - DIPLOMA ===================== */
+#scene8 {
+  background: linear-gradient(135deg, #1a0a2e, #3a1a5e, #5a2a8e, #FFB347, #FF8C42);
+}
+.diploma {
+  max-width: 640px; width: 100%;
+  background: linear-gradient(135deg, rgba(255,248,220,0.95), rgba(255,235,180,0.9));
+  border: 6px double var(--gold);
+  border-radius: 20px;
+  padding: 40px 32px;
+  text-align: center;
+  color: #3a2a0a;
+  position: relative;
+  box-shadow: 0 0 40px rgba(255,215,0,0.3), inset 0 0 40px rgba(255,215,0,0.1);
+}
+.diploma::before {
+  content: '🌸 🦆 🐱 🌸';
+  position: absolute; top: 12px; left: 0; right: 0;
+  text-align: center; font-size: 20px;
+}
+.diploma-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.4rem, 4vw, 2.2rem);
+  font-weight: 900;
+  color: var(--deep-purple);
+  font-style: italic;
+}
+.diploma-name {
+  font-family: 'Dancing Script', cursive;
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  color: #8B4513;
+  margin: 8px 0;
+}
+.subject-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 16px 0;
+}
+.subject-item {
+  background: rgba(177,156,217,0.15);
+  border: 1px solid rgba(177,156,217,0.3);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--deep-purple);
+}
+.thesis {
+  font-family: 'Dancing Script', cursive;
+  font-size: clamp(1.1rem, 3vw, 1.6rem);
+  color: #8B4513;
+  margin: 16px 0;
+  font-style: italic;
+}
+
+/* ===================== SCENE 9 - MY LILY ===================== */
+#scene9 {
+  background: linear-gradient(160deg, #0a0a1e, #1a0a2e, #2a1040, #3d2060, #ffd4e8);
+}
+.lily-center {
+  font-size: 100px;
+  text-align: center;
+  animation: bloom 1.5s ease forwards, float 4s ease 1.5s infinite;
+  filter: drop-shadow(0 0 30px rgba(255,182,193,0.6));
+}
+.gratitude-text {
+  font-family: 'Dancing Script', cursive;
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  color: white;
+  text-align: center;
+  line-height: 1.8;
+  max-width: 560px;
+}
+.gratitude-line {
+  display: block;
+  margin: 6px 0;
+  animation: fadeInUp 0.6s ease forwards;
+  opacity: 0;
+}
+
+/* ===================== SCENE 10 - SPACE ===================== */
+#scene10 {
+  background: linear-gradient(135deg, #020210, #050520, #0a0a30, #100a40);
+}
+.space-text {
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  color: rgba(255,255,255,0.85);
+  text-align: center;
+  max-width: 600px;
+  line-height: 2;
+}
+.space-line {
+  display: block;
+  margin: 4px 0;
+  animation: fadeInUp 0.5s ease forwards;
+  opacity: 0;
+}
+.promise-text {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+  color: var(--sky);
+  text-align: center;
+  font-style: italic;
+  margin-top: 24px;
+}
+
+/* ===================== SCENE 11 - FLOWER ===================== */
+#scene11 {
+  background: linear-gradient(160deg, #0a0a1e, #1a0a3e, #3a1a6e, #6a2090, #FFB347, #FF8C42);
+}
+.interactive-lily {
+  font-size: 120px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-block;
+  animation: float 3s ease infinite;
+  user-select: none;
+  filter: drop-shadow(0 0 20px rgba(255,182,193,0.5));
+}
+.interactive-lily:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 40px rgba(255,182,193,0.9));
+}
+.interactive-lily:active { transform: scale(0.9); }
+.lily-message {
+  font-family: 'Dancing Script', cursive;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  color: var(--pink);
+  text-align: center;
+  margin-top: 16px;
+  animation: pulse 2s ease infinite;
+}
+
+/* ===================== SCENE 12 - DANCE FINALE ===================== */
+#scene12 {
+  background: linear-gradient(135deg, #1a0a2e, #4a1a5e, #7a2a8e, #FFB347, #FF6B6B);
+}
+.dancing-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 24px;
+  font-size: 70px;
+  margin: 24px 0;
+}
+.dancer {
+  display: inline-block;
+  animation: dance 1s ease infinite;
+}
+.dancer:nth-child(2) { animation-delay: 0.2s; }
+.dancer:nth-child(3) { animation-delay: 0.4s; }
+.dancer:nth-child(4) { animation-delay: 0.6s; }
+.dancer:nth-child(5) { animation-delay: 0.8s; }
+
+.achievement {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,215,0,0.1);
+  border: 1px solid var(--gold);
+  border-radius: 30px;
+  padding: 8px 16px;
+  color: var(--gold);
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin: 4px;
+}
+
+/* ===================== FINAL SCENE ===================== */
+#sceneFinal {
+  background: linear-gradient(160deg, #050510, #0a0a25, #150a35, #2a1050, #FFB347, #FF8C42);
+}
+.final-text {
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  color: rgba(255,255,255,0.9);
+  text-align: center;
+  max-width: 600px;
+  line-height: 2.2;
+  font-style: italic;
+}
+.final-love {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  font-weight: 900;
+  text-align: center;
+  background: linear-gradient(135deg, var(--pink), var(--purple), var(--orange), var(--sky));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 300% 300%;
+  animation: shimmer 4s ease infinite;
+  margin: 24px 0;
+}
+
+/* FLOATING DUCKS */
+.floating-duck {
+  position: fixed;
+  font-size: 30px;
+  pointer-events: none;
+  z-index: 1;
+  animation: floatX var(--dur, 15s) linear var(--delay, 0s) infinite;
+  top: var(--top, 30%);
+}
+
+/* STARS */
+.star {
+  position: fixed;
+  width: 4px; height: 4px;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle var(--dur, 3s) ease var(--delay, 0s) infinite;
+}
+
+/* LILY PARTICLES */
+.lily-particle {
+  position: fixed;
+  font-size: var(--size, 20px);
+  pointer-events: none;
+  z-index: 1;
+  animation: raindrop var(--dur, 4s) linear var(--delay, 0s) infinite;
+  left: var(--left, 50%);
+}
+
+/* SECTION HEADINGS */
+.section-tag {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 8px;
+  text-align: center;
+}
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 5vw, 3.5rem);
+  font-weight: 900;
+  color: white;
+  text-align: center;
+  line-height: 1.2;
+  margin-bottom: 24px;
+}
+.section-title span {
+  color: var(--pink);
+}
+
+/* CAT CORNER */
+.cat-corner {
+  position: fixed;
+  bottom: 80px; left: 16px;
+  font-size: 40px;
+  cursor: pointer;
+  z-index: 100;
+  transition: all 0.3s ease;
+  animation: duckSwim 3s ease infinite;
+}
+.cat-corner:hover {
+  transform: scale(1.3) rotate(10deg);
+}
+
+/* SCROLL CTA */
+.scroll-cta {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  color: rgba(255,255,255,0.6);
+  font-size: 0.85rem;
+  animation: bounce 2s ease infinite;
+}
+.scroll-arrow { font-size: 24px; display: block; }
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .glass { padding: 24px 16px; }
+  .timeline::before { left: 20px; }
+  .timeline-item { width: 85%; margin-left: 48px !important; margin-right: 0 !important; }
+  .timeline-item::after { left: -38px !important; right: auto !important; }
+  .subject-grid { grid-template-columns: 1fr; }
+  .dancing-row { font-size: 48px; gap: 12px; }
+}
+
+/* CONFETTI PIECE */
+.confetti {
+  position: fixed;
+  width: 10px; height: 10px;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 9997;
+  animation: raindrop var(--dur) linear var(--delay) infinite;
+  left: var(--left);
+  background: var(--color);
+  transform: rotate(var(--rot));
+}
+
+/* PORTUGAL FLAG SUBTLE */
+.portugal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 30px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.7);
+  margin: 4px;
+}
+
+/* HIDDEN CATS */
+.hidden-cat {
+  position: absolute;
+  font-size: 24px;
+  cursor: pointer;
+  opacity: 0.05;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 10;
+}
+.hidden-cat:hover {
+  opacity: 1;
+  transform: scale(1.5);
+}
+</style>
+</head>
+<body>
+
+<!-- PROGRESS BAR -->
+<div id="progressBar"></div>
+
+<!-- PARTICLE CANVAS -->
+<canvas id="particleCanvas"></canvas>
+
+<!-- NAV DOTS -->
+<div id="navDots"></div>
+
+<!-- MUSIC BUTTON -->
+<button id="musicBtn" onclick="toggleMusic()" title="Toggle music">🎵</button>
+
+<!-- HIDDEN CAT -->
+<div class="cat-corner" onclick="catClick()" title="Psst... click me!">😸</div>
+
+<!-- FLOATING DUCKS -->
+<div class="floating-duck" style="--top:20%;--dur:18s;--delay:0s;">🦆</div>
+<div class="floating-duck" style="--top:50%;--dur:22s;--delay:5s;">🦆</div>
+<div class="floating-duck" style="--top:70%;--dur:25s;--delay:10s;">🦆</div>
+<div class="floating-duck" style="--top:35%;--dur:20s;--delay:15s;">🐥</div>
+
+<!-- LILY RAIN -->
+<div class="lily-particle" style="--left:10%;--dur:6s;--delay:0s;--size:18px;">🌸</div>
+<div class="lily-particle" style="--left:25%;--dur:8s;--delay:2s;--size:14px;">🌸</div>
+<div class="lily-particle" style="--left:40%;--dur:7s;--delay:4s;--size:20px;">🌸</div>
+<div class="lily-particle" style="--left:60%;--dur:9s;--delay:1s;--size:16px;">🌸</div>
+<div class="lily-particle" style="--left:75%;--dur:6s;--delay:3s;--size:12px;">🌸</div>
+<div class="lily-particle" style="--left:88%;--dur:8s;--delay:6s;--size:18px;">🌸</div>
+
+<!-- STARS -->
+<script>
+for(let i=0;i<80;i++){
+  const s=document.createElement('div');
+  s.className='star';
+  s.style.cssText=`left:${Math.random()*100}vw;top:${Math.random()*100}vh;--dur:${2+Math.random()*4}s;--delay:${Math.random()*4}s;opacity:${0.3+Math.random()*0.7};width:${1+Math.random()*3}px;height:${1+Math.random()*3}px;`;
+  document.body.appendChild(s);
+}
+</script>
+
+<!-- HIDDEN CATS SCATTERED -->
+<div class="hidden-cat" style="top:15%;left:5%;" onclick="catClick()">🐱</div>
+<div class="hidden-cat" style="top:45%;right:3%;" onclick="catClick()">😺</div>
+<div class="hidden-cat" style="top:75%;left:8%;" onclick="catClick()">😻</div>
+<div class="hidden-cat" style="top:30%;right:7%;" onclick="catClick()">🐈</div>
+
+<!-- ===================== SCENE 1 ===================== -->
+<section class="scene" id="scene1" data-scene="0">
+  <div style="position:relative;z-index:2;text-align:center;width:100%;max-width:700px;">
+    <div style="font-size:60px;animation:bloom 1s ease forwards;">🌸</div>
+    <h1 class="hero-title">Official Apology<br><span style="color:var(--pink);font-style:italic;">For Being Stupid</span><br>And Hurting You</h1>
+    <p class="hero-subtitle">A sincere, somewhat embarrassing, fully deserved production 💜</p>
+    
+    <div class="certificate glass" style="margin:32px auto 0;">
+      <div class="cert-title">CERTIFICATE OF ACHIEVEMENT</div>
+      <div style="color:rgba(255,255,255,0.6);font-size:0.8rem;letter-spacing:3px;margin:4px 0;">This certifies that</div>
+      <div class="cert-name">Mayank</div>
+      <div style="color:rgba(255,255,255,0.7);font-size:0.9rem;margin:4px 0;">The Boyfriend · Professional Idiot · Certified Overthinker</div>
+      <div style="color:rgba(255,255,255,0.6);font-size:0.85rem;margin:8px 0;font-style:italic;">Bachelor of Vania Moodology & Emotionology</div>
+      <hr style="border-color:rgba(255,215,0,0.3);margin:12px 0;">
+      <div style="color:rgba(255,255,255,0.7);font-size:0.85rem;">has completed</div>
+      <div style="color:var(--pink);font-weight:800;font-size:1rem;margin:4px 0;">Advanced Studies In Making Vania Angry</div>
+      <div style="color:rgba(255,255,255,0.6);font-size:0.8rem;margin:8px 0;">
+        Specialization: Accidental Idiocy · Minor: Failing When It Matters Most
+      </div>
+      <div class="cert-grade">GRADE: A+ 😔</div>
+      <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;margin-top:8px;font-style:italic;">Signed: The Committee of People Who Should Know Better</div>
+      <div class="stamp">NOT PROUD OF IT</div>
+    </div>
+    
+    <div style="margin-top:48px;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;">
+      <div class="portugal-badge">🇵🇹 Portuguese Princess</div>
+      <div class="portugal-badge">🗼 Based in France</div>
+      <div class="portugal-badge">💜 BTS Enthusiast</div>
+      <div class="portugal-badge">🌸 Lily Lover</div>
+      <div class="portugal-badge">🦆 Duck Fan</div>
+    </div>
+  </div>
+  <div class="scroll-cta">
+    <span class="scroll-arrow">↓</span>
+    Scroll to begin the journey
+  </div>
+</section>
+
+<!-- ===================== SCENE 2 ===================== -->
+<section class="scene" id="scene2" data-scene="1">
+  <div style="position:relative;z-index:2;width:100%;max-width:700px;">
+    <div class="section-tag">🔍 TOP SECRET INVESTIGATION</div>
+    <h2 class="section-title">Operation: <span>Why Is Vania Angry?</span></h2>
+    
+    <div class="board glass" style="position:relative;">
+      <div style="text-align:center;color:var(--orange);font-size:0.9rem;font-weight:800;letter-spacing:2px;margin-bottom:20px;">
+        🔴 CLASSIFIED · INVESTIGATION BOARD · BOYFRIEND DIVISION
+      </div>
+      
+      <!-- String decorations (CSS only) -->
+      <div style="position:absolute;top:60px;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(255,100,100,0.5),transparent);"></div>
+      
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:20px;">
+        <div class="evidence-card" style="--rot:-3deg;">📍 Subject: <strong>VANIA</strong></div>
+        <div class="evidence-card" style="--rot:2deg;">🇵🇹 Origin: <strong>Portugal</strong></div>
+        <div class="evidence-card" style="--rot:-1deg;">🗼 Habitat: <strong>France</strong></div>
+        <div class="evidence-card" style="--rot:4deg;">🌸 Fav Flower: <strong>Lily</strong></div>
+        <div class="evidence-card" style="--rot:-2deg;">💜 BTS Status: <strong>CRITICAL</strong></div>
+        <div class="evidence-card" style="--rot:1deg;">🦆 Duck Level: <strong>HIGH</strong></div>
+        <div class="evidence-card" style="--rot:-4deg;">⚠️ Danger Level: <strong>Extremely Adorable</strong></div>
+        <div class="evidence-card" style="--rot:3deg;">😤 Boyfriend IQ: <strong>Questionable</strong></div>
+      </div>
+      
+      <hr style="border-color:rgba(255,255,255,0.1);margin:16px 0;">
+      
+      <div style="color:rgba(255,255,255,0.8);font-size:1rem;text-align:center;font-style:italic;margin:8px 0;">
+        🔎 Investigation Findings:
+      </div>
+      
+      <div style="display:grid;gap:10px;margin-top:12px;">
+        <div style="background:rgba(255,100,100,0.1);border:1px solid rgba(255,100,100,0.3);border-radius:12px;padding:12px 16px;color:white;font-size:0.9rem;">
+          <strong style="color:var(--rose-red);">FINDING #1:</strong> Subject is clearly incredible. Boyfriend failed to appreciate this sufficiently. <span style="font-size:18px;">🦆</span>
+        </div>
+        <div style="background:rgba(255,179,71,0.1);border:1px solid rgba(255,179,71,0.3);border-radius:12px;padding:12px 16px;color:white;font-size:0.9rem;">
+          <strong style="color:var(--orange);">FINDING #2:</strong> BTS was minimized. This was a catastrophic error. BTS is not just music, it's a lifestyle. A whole world. <span style="font-size:18px;">💜</span>
+        </div>
+        <div style="background:rgba(135,206,235,0.1);border:1px solid rgba(135,206,235,0.3);border-radius:12px;padding:12px 16px;color:white;font-size:0.9rem;">
+          <strong style="color:var(--sky);">FINDING #3:</strong> She was hurting. He didn't listen well enough. She tried to communicate. He overthought it. Classic Mayank. <span style="font-size:18px;">🐱</span>
+        </div>
+        <div style="background:rgba(177,156,217,0.1);border:1px solid rgba(177,156,217,0.3);border-radius:12px;padding:12px 16px;color:white;font-size:0.9rem;">
+          <strong style="color:var(--purple);">CONCLUSION:</strong> The boyfriend is, in the most professional scientific terms, a certified dumdum. Investigation complete. <span style="font-size:18px;">🌸</span>
+        </div>
+      </div>
+      
+      <div style="text-align:center;margin-top:20px;font-size:28px;animation:duckSwim 2s ease infinite;display:inline-block;width:100%;">
+        🦆🦆🦆 The Jury Of Ducks Has Reviewed The Evidence 🦆🦆🦆
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SCENE 3 ===================== -->
+<section class="scene" id="scene3" data-scene="2">
+  <div style="position:relative;z-index:2;width:100%;max-width:600px;text-align:center;">
+    <div class="section-tag">🎮 INTERACTIVE</div>
+    <h2 class="section-title"><span>Release</span> Your Anger</h2>
+    <p style="color:rgba(255,255,255,0.7);margin-bottom:24px;font-style:italic;">He deserves it. Go ahead. No judgment.</p>
+    
+    <div id="boyfriendAvatar" class="boyfriend-avatar" onclick="randomReact()">😊</div>
+    
+    <div style="margin:12px 0;">
+      <div style="color:rgba(255,255,255,0.7);font-size:0.9rem;margin-bottom:8px;">Damage Meter:</div>
+      <div class="damage-bar"><div class="damage-fill" id="damageFill"></div></div>
+      <div id="damageLabel" style="color:var(--pink);font-size:0.85rem;margin-top:4px;">0% — He's still smiling. Keep going.</div>
+    </div>
+    
+    <div id="reactionText" class="reaction-text">Ready to receive justice...</div>
+    
+    <div style="margin:20px 0;">
+      <button class="slap-btn slap" onclick="doAction('slap')">👋 Slap Boyfriend</button>
+      <button class="slap-btn bonk" onclick="doAction('bonk')">🔨 Bonk Boyfriend</button>
+      <button class="slap-btn bite" onclick="doAction('bite')">🦈 Bite Boyfriend</button>
+      <button class="slap-btn annoy" onclick="doAction('annoy')">💢 Annoy Boyfriend</button>
+    </div>
+    
+    <div style="font-size:24px;animation:duckSwim 2s ease infinite;display:inline-block;">
+      🦆 Official Witness Duck 🦆
+    </div>
+    <div style="color:rgba(255,255,255,0.5);font-size:0.8rem;margin-top:4px;font-style:italic;">(He agrees. The boyfriend had it coming.)</div>
+  </div>
+</section>
+
+<!-- ===================== SCENE 4 ===================== -->
+<section class="scene" id="scene4" data-scene="3">
+  <div style="position:relative;z-index:2;width:100%;max-width:640px;">
+    <div class="section-tag">💫 OUR JOURNEY</div>
+    <h2 class="section-title">Relationship <span>Timeline</span></h2>
+    
+    <div class="timeline" id="timeline">
+      <div class="timeline-item" data-icon="🌸" style="animation-delay:0.1s">
+        <h4>The Beginning</h4>
+        <p>Two strangers who somehow found each other across borders and time zones.</p>
+      </div>
+      <div class="timeline-item" data-icon="📞" style="animation-delay:0.2s">
+        <h4>The First Calls</h4>
+        <p>Hours that felt like minutes. Conversations that built a whole world between two people.</p>
+      </div>
+      <div class="timeline-item" data-icon="📸" style="animation-delay:0.3s">
+        <h4>The Snaps & Memories</h4>
+        <p>Tiny moments frozen in time. Laughing over nothing. Being ridiculous together.</p>
+      </div>
+      <div class="timeline-item" data-icon="💜" style="animation-delay:0.4s">
+        <h4>BTS Moments</h4>
+        <p>She shared something she loves. He should have paid closer attention. He's learning.</p>
+      </div>
+      <div class="timeline-item" data-icon="🗼" style="animation-delay:0.5s">
+        <h4>Paris Dreams</h4>
+        <p>The Eiffel Tower standing tall in the background of a future neither of them can stop imagining.</p>
+      </div>
+      <div class="timeline-item" data-icon="🎃" style="animation-delay:0.6s">
+        <h4>Halloween (The Hard One)</h4>
+        <p>The night things hurt the most. But they got through it. Somehow, always, they found each other again.</p>
+      </div>
+      <div class="timeline-item" data-icon="🌊" style="animation-delay:0.7s">
+        <h4>The Storms</h4>
+        <p>There were moments it felt impossible. Misunderstandings. Silences. Pain on both sides.</p>
+      </div>
+      <div class="timeline-item" data-icon="🌅" style="animation-delay:0.8s">
+        <h4>We Survived All Of This</h4>
+        <p>And we can survive this too.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SCENE 5 ===================== -->
+<section class="scene" id="scene5" data-scene="4">
+  <div style="position:relative;z-index:2;width:100%;max-width:640px;text-align:center;">
+    <div style="font-size:60px;margin-bottom:8px;animation:spin 8s linear infinite;">💜</div>
+    <div class="section-tag" style="color:var(--purple);">⚖️ THE PURPLE COURT</div>
+    <h2 class="court-header">The BTS Court Hearing</h2>
+    <p style="color:rgba(177,156,217,0.8);margin:8px 0 24px;font-style:italic;">The People vs. Mayank (The Stubborn Boyfriend)</p>
+    
+    <div class="glass" style="text-align:left;margin-bottom:20px;border-color:rgba(177,156,217,0.3);">
+      <div style="color:var(--purple);font-weight:800;font-size:0.9rem;letter-spacing:2px;margin-bottom:12px;">FORMAL CHARGES:</div>
+      <div class="charge">
+        <span style="font-size:24px;">💜</span>
+        <span>Charge 1: Failed to understand the importance of BTS with adequate seriousness</span>
+      </div>
+      <div class="charge">
+        <span style="font-size:24px;">😤</span>
+        <span>Charge 2: Acted stubborn when he should have been open and understanding</span>
+      </div>
+      <div class="charge">
+        <span style="font-size:24px;">💔</span>
+        <span>Charge 3: Failed to support her feelings about something that mattered deeply to her</span>
+      </div>
+      <div class="charge">
+        <span style="font-size:24px;">🚫</span>
+        <span>Charge 4: Did not listen well enough, repeatedly</span>
+      </div>
+    </div>
+    
+    <div class="verdict-box">
+      <div class="verdict-text">VERDICT: GUILTY 🔨</div>
+      <hr style="border-color:rgba(177,156,217,0.2);margin:16px 0;">
+      <div style="color:var(--purple);font-weight:800;font-size:1rem;margin-bottom:12px;letter-spacing:2px;">SENTENCE:</div>
+      <div class="sentence-item">🎵 Listen Better</div>
+      <div class="sentence-item">💜 Understand Better</div>
+      <div class="sentence-item">📖 Learn Better</div>
+      <div class="sentence-item">❤️ Love Better</div>
+      <div style="margin-top:16px;color:rgba(255,255,255,0.6);font-size:0.85rem;font-style:italic;">
+        "BTS is not just music. It is comfort, identity, community, and love. She deserved to have that understood."
+      </div>
+    </div>
+    
+    <div style="margin-top:24px;font-size:32px;animation:duckSwim 2s ease infinite;display:inline-block;">
+      🦆 Duck Bailiff Confirms Verdict 🦆
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SCENE 6 ===================== -->
+<section class="scene" id="scene6" data-scene="5">
+  <div style="position:relative;z-index:2;width:100%;max-width:640px;text-align:center;">
+    <div class="eiffel">🗼</div>
+    <div style="font-size:12px;letter-spacing:4px;color:var(--orange);text-transform:uppercase;margin-top:8px;">Paris · France · The Promise</div>
+    
+    <div class="glass" style="margin-top:24px;border-color:rgba(255,179,71,0.2);">
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,4vw,2.2rem);color:var(--orange);font-style:italic;margin-bottom:20px;">
+        The Eiffel Tower Promise
+      </h2>
+      <div class="emotional-text">
+        I finally realized how stupid I was.<br>
+        Not because someone told me.<br>
+        <span class="highlight-line">But because I finally understood how much it hurt you.</span><br><br>
+        You were hurt enough that it felt like you didn't even want to call your baby anymore.<br>
+        You were hurt enough to think about ending us.<br>
+        You were hurt enough that sometimes it felt like you had already made up your mind.<br><br>
+        <span class="highlight-line">The person hurting was you.</span><br><br>
+        The girl I love.<br>
+        The girl who believed in me.<br>
+        The girl who supported me.<br>
+        <span class="highlight-line">The girl who made life brighter.</span>
+      </div>
+    </div>
+    
+    <div style="margin-top:24px;display:flex;justify-content:center;gap:16px;font-size:28px;">
+      <span style="animation:twinkle 1.5s ease infinite;">⭐</span>
+      <span style="animation:twinkle 1.5s ease 0.3s infinite;">⭐</span>
+      <span style="animation:twinkle 1.5s ease 0.6s infinite;">⭐</span>
+      <span style="animation:twinkle 1.5s ease 0.9s infinite;">⭐</span>
+      <span style="animation:twinkle 1.5s ease 1.2s infinite;">⭐</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SCENE 7 ===================== -->
+<section class="scene" id="scene7" data-scene="6">
+  <div style="position:relative;z-index:2;width:100%;max-width:640px;text-align:center;">
+    <div class="section-tag" style="color:var(--sky);">💙 THE TRUTH</div>
+    <h2 class="section-title" style="color:var(--sky);">No Jokes. No Certificates.<br><span style="color:white;">Only Honesty.</span></h2>
+    
+    <div class="glass" style="border-color:rgba(135,206,235,0.2);">
+      <div class="truth-text">
+        <span class="maybe-line" style="animation-delay:0.1s">Maybe it feels like you don't want the calls anymore.</span>
+        <span class="maybe-line" style="animation-delay:0.3s">Maybe it feels like you don't want the FaceTimes anymore.</span>
+        <span class="maybe-line" style="animation-delay:0.5s">Maybe it feels like you don't want the snaps anymore.</span>
+        <span class="maybe-line" style="animation-delay:0.7s">Maybe it feels like the love isn't there anymore.</span>
+        <span class="maybe-line" style="animation-delay:0.9s">Maybe it feels like you don't enjoy my company anymore.</span>
+        
+        <br>
+        <span style="color:rgba(255,255,255,0.7);font-style:italic;display:block;margin:12px 0;font-size:1.1rem;">
+          There were countless times when it felt impossible.<br>
+          You felt suffocated. Ignored. Unheard. Unloved.<br>
+          The worst one was Halloween.<br><br>
+          Yet somehow we always found our way back.
+        </span>
+      </div>
+    </div>
+    
+    <div class="storm-text" style="margin-top:28px;">
+      "I believe this is a storm.<br>
+      <span style="color:var(--orange);">Storms pass.</span>"
+    </div>
+    
+    <div style="margin-top:24px;font-size:40px;animation:heartbeat 2s ease infinite;">🌸</div>
+  </div>
+</section>
+
+<!-- ===================== SCENE 8 ===================== -->
+<section class="scene" id="scene8" data-scene="7">
+  <div style="position:relative;z-index:2;width:100%;max-width:680px;text-align:center;">
+    <div class="section-tag">🎓 OFFICIAL DOCUMENT</div>
+    <h2 class="section-title">Bachelor of <span>Vania Moodology</span></h2>
+    
+    <div class="diploma">
+      <div style="height:32px;"></div>
+      <div class="cert-title" style="color:var(--deep-purple);font-size:0.9rem;">UNIVERSITY OF EMOTIONAL INTELLIGENCE</div>
+      <div style="font-size:0.8rem;color:#666;letter-spacing:3px;margin:4px 0;">PROUDLY PRESENTS</div>
+      <div class="diploma-title">Bachelor of Science in</div>
+      <div class="diploma-name">Vania Moodology & Emotionology</div>
+      <div style="color:#8B4513;font-style:italic;font-size:0.9rem;margin:8px 0;">conferred upon</div>
+      <div style="font-family:'Playfair Display',serif;font-size:2rem;color:var(--deep-purple);font-weight:900;">Mayank</div>
+      
+      <hr style="border-color:rgba(139,69,19,0.2);margin:16px 0;">
+      
+      <div style="color:#8B4513;font-weight:800;font-size:0.85rem;margin-bottom:8px;letter-spacing:2px;">CORE SUBJECTS COMPLETED:</div>
+      <div class="subject-grid">
+        <div class="subject-item">📚 Understanding Vania (Pass)</div>
+        <div class="subject-item">🔍 Recognizing "I'm Fine" (Pass)</div>
+        <div class="subject-item">🙈 Being Wrong Professionally (A+)</div>
+        <div class="subject-item">💜 Loving Vania Intensively (In Progress)</div>
+        <div class="subject-item">🎵 BTS Appreciation 101 (Remedial)</div>
+        <div class="subject-item">🦆 Duck Studies (Distinction)</div>
+      </div>
+      
+      <hr style="border-color:rgba(139,69,19,0.2);margin:16px 0;">
+      
+      <div style="color:#8B4513;font-weight:800;font-size:0.85rem;margin-bottom:8px;letter-spacing:2px;">FINAL THESIS:</div>
+      <div class="thesis">
+        "I love you. I will never give up on you.<br>
+        I will never give up on our dreams.<br>
+        Dawn always comes."
+      </div>
+      
+      <div style="margin-top:16px;font-size:24px;animation:bounce 2s ease infinite;display:inline-block;">🌸🦆🐱🌸</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SCENE 9 ===================== -->
+<section class="scene" id="scene9" data-scene="8">
+  <div style="position:relative;z-index:2;width:100%;max-width:600px;text-align:center;">
+    <div class="section-tag" style="color:var(--pink);">🌸 PURE GRATITUDE</div>
+    <h2 class="section-title">My <span>Lily</span></h2>
+    
+    <div class="lily-center" id="bloomLily">🌸</div>
+    
+    <div style="height:24px;"></div>
+    
+    <div class="glass" style="border-color:rgba(255,182,193,0.2);">
+      <div class="gratitude-text">
+        <span class="gratitude-line" style="animation-delay:0.2s">Thank you for showing me what love is.</span>
+        <span class="gratitude-line" style="animation-delay:0.5s">Thank you for being there when nobody else was.</span>
+        <span class="gratitude-line" style="animation-delay:0.8s">Thank you for showing me I am worth something.</span>
+        <span class="gratitude-line" style="animation-delay:1.1s">Thank you for believing in me.</span>
+        <span class="gratitude-line" style="animation-delay:1.4s">Thank you for being proud of me.</span>
+        <span class="gratitude-line" style="animation-delay:1.7s">Thank you for supporting my dreams.</span>
+        <span class="gratitude-line" style="animation-delay:2s">Thank you for listening to my ideas.</span>
+        <span class="gratitude-line" style="animation-delay:2.3s">Thank you for every call, every laugh, every memory.</span>
+        <span class="gratitude-line" style="animation-delay:2.6s">Thank you for giving me some of the happiest moments of my life.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SCENE 10 ===================== -->
+<section class="scene" id="scene10" data-scene="9">
+  <div style="position:relative;z-index:2;width:100%;max-width:640px;text-align:center;">
+    <div class="section-tag" style="color:var(--sky);">🌌 RESPECT & SPACE</div>
+    <h2 class="section-title" style="font-size:clamp(1.8rem,4vw,3rem);">I Finally <span>Understand</span></h2>
+    
+    <div style="font-size:60px;margin:16px 0;animation:float 4s ease infinite;">🌌</div>
+    
+    <div class="glass" style="border-color:rgba(135,206,235,0.15);">
+      <div class="space-text">
+        <span class="space-line" style="animation-delay:0.1s">I think I finally understand something.</span>
+        <span class="space-line" style="animation-delay:0.3s;color:var(--pink);">Love is not forcing someone closer when they are hurting.</span>
+        <span class="space-line" style="animation-delay:0.5s">Love is not demanding a call.</span>
+        <span class="space-line" style="animation-delay:0.7s">Love is not demanding a text.</span>
+        <span class="space-line" style="animation-delay:0.9s">Love is not demanding forgiveness.</span>
+        <br>
+        <span class="space-line" style="animation-delay:1.1s;font-style:italic;color:rgba(255,255,255,0.7)">I know I still have a lot to learn.</span>
+        <span class="space-line" style="animation-delay:1.3s;font-style:italic;color:rgba(255,255,255,0.7)">One of those things is giving you space.</span>
+        <span class="space-line" style="animation-delay:1.5s;color:var(--sky);">Real space. Actual space.</span>
+        <span class="space-line" style="animation-delay:1.7s">Time to breathe. Time to think.</span>
+        <span class="space-line" style="animation-delay:1.9s">Time to feel whatever you need to feel.</span>
+      </div>
+    </div>
+    
+    <div class="promise-text" style="margin-top:28px;">
+      "I won't ask you to call me.<br>
+      I won't ask you to text me.<br>
+      I won't ask you to forgive me today."
+    </div>
+    
+    <div class="glass" style="margin-top:24px;border-color:rgba(255,182,193,0.2);padding:24px;">
+      <div style="font-family:'Dancing Script',cursive;font-size:clamp(1.3rem,3vw,1.8rem);color:var(--pink);line-height:1.8;">
+        I only wanted you to know I am sorry.<br>
+        And that I love you.<br><br>
+        <span style="color:white;">If one day you decide to reach for my hand again,</span><br>
+        <span style="color:var(--orange);">I will be here.</span><br><br>
+        And if you need time,<br>
+        <span style="color:var(--sky);">I will respect that too.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SCENE 11 ===================== -->
+<section class="scene" id="scene11" data-scene="10">
+  <div style="position:relative;z-index:2;width:100%;max-width:560px;text-align:center;">
+    <div class="section-tag" style="color:var(--pink);">🌸 FOR YOU</div>
+    <h2 class="section-title">Keep This <span>Flower</span></h2>
+    <p style="color:rgba(255,255,255,0.6);margin-bottom:32px;font-style:italic;">Click to make it bloom 🌸</p>
+    
+    <div class="interactive-lily" id="interactiveLily" onclick="bloomLily()">🌷</div>
+    
+    <div id="lilyMessage" class="lily-message" style="opacity:0;margin-top:16px;transition:opacity 0.5s ease;">
+      It bloomed just for you 🌸
+    </div>
+    
+    <div style="height:24px;"></div>
+    
+    <div class="glass" style="border-color:rgba(255,182,193,0.2);margin-top:8px;">
+      <div style="font-family:'Dancing Script',cursive;font-size:clamp(1.2rem,3vw,1.6rem);color:white;line-height:2;">
+        No pressure.<br>
+        No expectations.<br>
+        No deadlines.<br><br>
+        <span style="color:var(--pink);">Just a reminder that someone in this world loves you very much.</span>
+      </div>
+    </div>
+    
+    <div style="margin-top:24px;display:flex;justify-content:center;gap:16px;flex-wrap:wrap;">
+      <div style="background:rgba(255,182,193,0.1);border:1px solid rgba(255,182,193,0.3);border-radius:20px;padding:10px 20px;color:var(--pink);font-size:0.9rem;font-weight:700;">🌸 Lilies = Love</div>
+      <div style="background:rgba(255,179,71,0.1);border:1px solid rgba(255,179,71,0.3);border-radius:20px;padding:10px 20px;color:var(--orange);font-size:0.9rem;font-weight:700;">🌸 Lilies = Patience</div>
+      <div style="background:rgba(177,156,217,0.1);border:1px solid rgba(177,156,217,0.3);border-radius:20px;padding:10px 20px;color:var(--purple);font-size:0.9rem;font-weight:700;">🌸 Lilies = Hope</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SCENE 12 ===================== -->
+<section class="scene" id="scene12" data-scene="11">
+  <div style="position:relative;z-index:2;width:100%;max-width:640px;text-align:center;">
+    <div class="section-tag">🎉 FINALE</div>
+    <h2 class="section-title">The <span>Grand</span> Finale!</h2>
+    
+    <div class="dancing-row">
+      <span class="dancer">🕺</span>
+      <span class="dancer">🦆</span>
+      <span class="dancer">🌸</span>
+      <span class="dancer">🐱</span>
+      <span class="dancer">💃</span>
+    </div>
+    
+    <div style="font-family:'Dancing Script',cursive;font-size:clamp(1.5rem,4vw,2.2rem);color:var(--pink);margin:16px 0;animation:pulse 2s ease infinite;">
+      🌸 Mayank's Grand Apology Performance 🌸
+    </div>
+    
+    <div style="margin:20px 0;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;">
+      <div class="achievement">🏆 Made Entire Apology Website</div>
+      <div class="achievement">🏆 Admitted Being An Idiot</div>
+      <div class="achievement">🏆 Survived All The Slaps</div>
+      <div class="achievement">🏆 Survived The Bonks</div>
+      <div class="achievement">🏆 Survived The Bites</div>
+      <div class="achievement">💜 Still Loves Vania</div>
+      <div class="achievement">🌸 Never Gave Up</div>
+      <div class="achievement">🦆 Certified Duck Friend</div>
+    </div>
+    
+    <div class="glass" style="margin-top:24px;border-color:rgba(255,215,0,0.2);padding:24px;">
+      <div style="font-size:40px;animation:bounce 1s ease infinite;">🌸🦆🐱💜</div>
+      <div style="font-family:'Playfair Display',serif;font-size:clamp(1rem,2.5vw,1.4rem);color:white;margin-top:12px;font-style:italic;line-height:1.8;">
+        People say the night is darkest before dawn.<br>
+        Maybe this is our dark night.<br>
+        <span style="color:var(--orange);">But dawn always comes.</span>
+      </div>
+    </div>
+    
+    <button onclick="launchConfetti()" style="margin-top:24px;padding:14px 32px;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;border-radius:50px;color:white;font-size:1.1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 4px 20px rgba(177,156,217,0.4);transition:transform 0.2s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+      🎉 Launch Celebration! 🎉
+    </button>
+  </div>
+</section>
+
+<!-- ===================== FINAL SCENE ===================== -->
+<section class="scene" id="sceneFinal" data-scene="12">
+  <div style="position:relative;z-index:2;width:100%;max-width:640px;text-align:center;">
+    <div style="font-size:50px;animation:heartbeat 2s ease infinite;margin-bottom:8px;">🌸💜🌸</div>
+    <div class="section-tag" style="color:var(--pink);">💌 ONE LAST THING</div>
+    
+    <div class="glass" style="border-color:rgba(255,182,193,0.2);margin-top:16px;">
+      <div class="final-text">
+        I know I can't fix everything with a website.<br>
+        I know I can't erase the hurt.<br>
+        I know I can't undo yesterday.<br><br>
+        But I wanted you to know something.<br><br>
+        <span style="color:var(--pink);font-size:1.15em;">You changed my life.</span><br>
+        You showed me what love feels like.<br>
+        You showed me kindness.<br>
+        You showed me support.<br>
+        You showed me that I was worth believing in.<br><br>
+        And for that I will always be grateful.<br><br>
+        Maybe this is a difficult chapter.<br>
+        Maybe this is our dark night.<br>
+        Maybe everything feels uncertain.<br><br>
+        But no matter what happens,<br>
+        <span style="color:var(--orange);font-size:1.1em;">Meeting you was one of the best things that ever happened to me.</span><br><br>
+        Thank you for reading this.<br>
+        Thank you for existing.<br>
+        Thank you for being you.
+      </div>
+    </div>
+    
+    <div class="final-love">I love you.</div>
+    
+    <div style="font-size:50px;animation:bloom 1.5s ease forwards,float 3s ease 1.5s infinite;margin-bottom:24px;">🌸💜</div>
+    
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:24px;">
+      <div class="portugal-badge">🇵🇹 From someone who loves you</div>
+      <div class="portugal-badge">🗼 To Paris and beyond</div>
+      <div class="portugal-badge">🌸 Always & forever</div>
+    </div>
+    
+    <div style="color:rgba(255,255,255,0.3);font-size:0.8rem;font-style:italic;">
+      Made with 💜 and a lot of sorry-ness by Mayank<br>
+      🦆 The Duck Court Certified This Apology As Official 🦆
+    </div>
+  </div>
+</section>
+
+<!-- AUDIO CONTEXT (Ambient Tones) -->
+<script>
+// === AUDIO ===
+let audioCtx, musicPlaying = false, oscillators = [];
+
+function createAmbientMusic() {
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const notes = [261.63, 293.66, 329.63, 349.23, 392, 440, 493.88];
+  
+  function playNote(freq, time, dur) {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.frequency.value = freq;
+    osc.type = 'sine';
+    gain.gain.setValueAtTime(0, time);
+    gain.gain.linearRampToValueAtTime(0.06, time + 0.1);
+    gain.gain.linearRampToValueAtTime(0, time + dur);
+    osc.start(time);
+    osc.stop(time + dur + 0.1);
+    oscillators.push(osc);
+  }
+  
+  let t = audioCtx.currentTime;
+  const melody = [0,2,4,5,4,2,0,2,4,7,6,4,2,4,5,4];
+  
+  function loopMusic() {
+    if (!musicPlaying) return;
+    t = audioCtx.currentTime;
+    melody.forEach((n, i) => {
+      playNote(notes[n] * 0.5, t + i * 0.6, 0.5);
+      if (i % 3 === 0) playNote(notes[n % notes.length] * 0.25, t + i * 0.6 + 0.1, 1);
+    });
+    setTimeout(loopMusic, melody.length * 600);
+  }
+  loopMusic();
+}
+
+function toggleMusic() {
+  const btn = document.getElementById('musicBtn');
+  if (!musicPlaying) {
+    musicPlaying = true;
+    btn.textContent = '🎶';
+    btn.style.background = 'linear-gradient(135deg,var(--orange),var(--pink))';
+    if (!audioCtx) createAmbientMusic();
+    else if (audioCtx.state === 'suspended') audioCtx.resume();
+  } else {
+    musicPlaying = false;
+    btn.textContent = '🎵';
+    btn.style.background = 'linear-gradient(135deg,var(--purple),var(--pink))';
+    if (audioCtx) audioCtx.suspend();
+  }
+}
+
+// === PARTICLE CANVAS ===
+const canvas = document.getElementById('particleCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function initParticles() {
+  particles = [];
+  for (let i = 0; i < 60; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: -Math.random() * 0.5 - 0.1,
+      size: Math.random() * 3 + 1,
+      opacity: Math.random() * 0.5 + 0.1,
+      color: ['#FFB6C1','#B19CD9','#87CEEB','#FFB347','#FF6B6B','#FFD700'][Math.floor(Math.random()*6)],
+      type: Math.random() > 0.6 ? 'circle' : 'lily'
+    });
+  }
+}
+initParticles();
+
+function drawParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    ctx.save();
+    ctx.globalAlpha = p.opacity;
+    if (p.type === 'lily') {
+      ctx.font = `${p.size * 6}px serif`;
+      ctx.fillText('🌸', p.x, p.y);
+    } else {
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+    p.x += p.vx;
+    p.y += p.vy;
+    if (p.y < -20) { p.y = canvas.height + 20; p.x = Math.random() * canvas.width; }
+    if (p.x < 0) p.x = canvas.width;
+    if (p.x > canvas.width) p.x = 0;
+  });
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+// === MOUSE TRAIL ===
+document.addEventListener('mousemove', e => {
+  for (let i = 0; i < 2; i++) {
+    particles.push({
+      x: e.clientX + (Math.random()-0.5)*20,
+      y: e.clientY + (Math.random()-0.5)*20,
+      vx: (Math.random()-0.5)*1.5,
+      vy: -Math.random()*2-0.5,
+      size: Math.random()*2+1,
+      opacity: 0.8,
+      color: ['#FFB6C1','#B19CD9','#FFB347'][Math.floor(Math.random()*3)],
+      type: 'circle',
+      life: 60,
+      decay: true
+    });
+  }
+  particles = particles.filter(p => !p.decay || (p.life = (p.life||60)-1) > 0);
+});
+
+// === PROGRESS BAR ===
+window.addEventListener('scroll', () => {
+  const total = document.body.scrollHeight - window.innerHeight;
+  const progress = (window.scrollY / total) * 100;
+  document.getElementById('progressBar').style.width = progress + '%';
+  
+  // Update nav dots
+  const scenes = document.querySelectorAll('.scene');
+  scenes.forEach((s, i) => {
+    const rect = s.getBoundingClientRect();
+    if (rect.top <= window.innerHeight/2 && rect.bottom >= window.innerHeight/2) {
+      document.querySelectorAll('.navDot').forEach(d => d.classList.remove('active'));
+      document.querySelectorAll('.navDot')[i]?.classList.add('active');
+    }
+  });
+  
+  // Animate timeline items
+  document.querySelectorAll('.timeline-item').forEach(item => {
+    const rect = item.getBoundingClientRect();
+    if (rect.top < window.innerHeight * 0.85) {
+      item.style.opacity = '1';
+    }
+  });
+  
+  // Animate maybe-lines
+  document.querySelectorAll('.maybe-line, .space-line, .gratitude-line').forEach((line, i) => {
+    const rect = line.getBoundingClientRect();
+    if (rect.top < window.innerHeight * 0.9) {
+      setTimeout(() => { line.style.opacity = '1'; }, i * 150);
+    }
+  });
+});
+
+// === NAV DOTS ===
+const scenes = document.querySelectorAll('.scene');
+const navDots = document.getElementById('navDots');
+scenes.forEach((s, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'navDot' + (i === 0 ? ' active' : '');
+  dot.onclick = () => s.scrollIntoView({ behavior: 'smooth' });
+  dot.title = ['Intro','Investigation','Release Anger','Timeline','BTS Court','Eiffel Promise','The Truth','Diploma','My Lily','Space','Flower','Finale','Last Word'][i] || '';
+  navDots.appendChild(dot);
+});
+
+// === SLAP GAME ===
+let damage = 0;
+const avatarEmojis = {
+  normal: '😊', slap: '😵', bonk: '🤕', bite: '😖', annoy: '😤',
+  high: '💫', vhigh: '🥴', max: '💀'
+};
+const reactions = {
+  slap: ['Ow! Fair enough! 😣','I deserved that 💔','Okay okay I get it 😭','Please... still love you 🥺','Worth it 💜'],
+  bonk: ['MY HEAD 🤕','This is justice 💥','Vania 1 - Mayank 0 🔨','My brain cells... gone 😵','BONKED INTO REALIZATION 💫'],
+  bite: ['WHY IS IT CUTE EVEN NOW 😭','A bite of karma 🦈','I bit back the truth... she bit back 😂','Ouch but okay 💜','Bite noted, lesson learned 🌸'],
+  annoy: ['I KNOW I KNOW 😤','Stop being cute while being mad 💜','Still adorable while angry 🌸','The annoyance is valid! 💢','Filing this under Deserved 📋']
+};
+
+function doAction(type) {
+  damage = Math.min(100, damage + (type === 'slap' ? 8 : type === 'bonk' ? 12 : type === 'bite' ? 10 : 6));
+  document.getElementById('damageFill').style.width = damage + '%';
+  
+  const msgs = ['0% — Still smiling.','20% — Starting to feel it!','40% — Getting the message...','60% — Okay I see I messed up!','80% — I am so sorry 😭','100% — FULLY REGRETTING EVERYTHING 💜'];
+  const idx = Math.min(5, Math.floor(damage/20));
+  document.getElementById('damageLabel').textContent = damage + '% — ' + msgs[idx].split('—')[1];
+  
+  const avatar = document.getElementById('boyfriendAvatar');
+  avatar.textContent = avatarEmojis[type];
+  avatar.style.animation = 'none';
+  avatar.style.transform = 'rotate(-15deg) scale(1.3)';
+  setTimeout(() => {
+    avatar.style.transform = '';
+    avatar.style.animation = 'float 3s ease infinite';
+    if (damage > 80) avatar.textContent = avatarEmojis.max;
+    else if (damage > 60) avatar.textContent = avatarEmojis.vhigh;
+    else if (damage > 40) avatar.textContent = avatarEmojis.high;
+    else avatar.textContent = avatarEmojis.normal;
+  }, 400);
+  
+  const arr = reactions[type];
+  document.getElementById('reactionText').textContent = arr[Math.floor(Math.random()*arr.length)];
+  
+  // Spawn lily confetti
+  spawnLilies(5);
+}
+
+function randomReact() { doAction(['slap','bonk','bite','annoy'][Math.floor(Math.random()*4)]); }
+
+// === BLOOM LILY ===
+let lilyStage = 0;
+const lilyStages = ['🌱','🌷','🌸','🌺','🌻'];
+function bloomLily() {
+  const lily = document.getElementById('interactiveLily');
+  lilyStage = Math.min(lilyStages.length-1, lilyStage+1);
+  lily.textContent = lilyStages[lilyStage];
+  lily.style.transform = 'scale(1.3)';
+  setTimeout(() => { lily.style.transform = ''; }, 300);
+  document.getElementById('lilyMessage').style.opacity = '1';
+  spawnLilies(10);
+  if (lilyStage === lilyStages.length - 1) {
+    document.getElementById('lilyMessage').textContent = '🌻 In full bloom — just like love should be 🌸';
+    launchConfetti();
+  }
+}
+
+// === CONFETTI ===
+function spawnLilies(n) {
+  for (let i = 0; i < n; i++) {
+    const el = document.createElement('div');
+    el.style.cssText = `position:fixed;left:${Math.random()*100}vw;top:-40px;font-size:${16+Math.random()*20}px;pointer-events:none;z-index:9998;animation:raindrop ${2+Math.random()*3}s linear forwards;`;
+    el.textContent = ['🌸','🌷','💜','⭐','🦆'][Math.floor(Math.random()*5)];
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 5000);
+  }
+}
+
+function launchConfetti() {
+  const colors = ['#FFB6C1','#B19CD9','#87CEEB','#FFB347','#FF6B6B','#FFD700','#90EE90'];
+  for (let i = 0; i < 80; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti';
+    el.style.cssText = `--left:${Math.random()*100}vw;--dur:${2+Math.random()*3}s;--delay:${Math.random()*2}s;--color:${colors[Math.floor(Math.random()*colors.length)]};--rot:${Math.random()*360}deg;width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;border-radius:${Math.random()>0.5?'50%':'2px'};`;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 6000);
+  }
+  spawnLilies(20);
+}
+
+// === CAT ===
+const catMsgs = ['Psst... Vania, he really does love you 🐱','The Cat Council endorses this apology 😺','*purring in Portuguese* 🐈','Nya~ this took effort nyaa~ 😸','Hidden cats agree: he tried his best 🐱'];
+let catIdx = 0;
+function catClick() {
+  const cat = document.querySelector('.cat-corner');
+  cat.style.transform = 'scale(1.5) rotate(20deg)';
+  setTimeout(() => { cat.style.transform = ''; }, 300);
+  alert(catMsgs[catIdx % catMsgs.length] + '\n\n🌸 Keep clicking me! 🌸');
+  catIdx++;
+  spawnLilies(5);
+}
+
+// === INITIAL BLOOM ===
+setTimeout(() => {
+  document.querySelectorAll('.timeline-item').forEach((item, i) => {
+    setTimeout(() => { item.style.opacity = '1'; }, i * 200);
+  });
+}, 2000);
+
+// === PARALLAX ===
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  document.querySelectorAll('.eiffel, .lily-center').forEach(el => {
+    el.style.transform = `translateY(${y * 0.03}px)`;
+  });
+});
+
+console.log('%c🌸 Made with love for Vania 🌸', 'color:#FFB6C1;font-size:20px;font-weight:bold;');
+console.log('%c💜 You are loved. You are appreciated. You are worth everything. 💜', 'color:#B19CD9;font-size:14px;');
+console.log('%c🦆 The Duck Court certifies this apology as genuine. 🦆', 'color:#FFB347;font-size:12px;');
+</script>
+
+</body>
+</html>
